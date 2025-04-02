@@ -109,25 +109,30 @@ now lets see in the _Component_ file `create-poll.blade.php` here we define the 
 
 [To know more about _Actions_ CLICK](https://livewire.laravel.com/docs/actions)
 
-What I learned is simply that **Actions** helps us apply some action in the browser. First we need to define that action in `CreatePoll.php` like 
+What I learned is simply that **Actions** helps us apply some action in the browser. First we need to define that action in `CreatePoll.php` like
+
 ```php
     public function addOption()
     {
         $this->options[] = '';
     }
 ```
-What this action does is it simply append the `''` in the `options`.   
-and to apply this 
+
+What this action does is it simply append the `''` in the `options`.  
+and to apply this
+
 ```php
     <div class="mt-4">
         <button class="btn" wire:click.prevent = "addOption">Add Option</button>
     </div>
 ```
-we use prevent as its in *form* so by default *button* does *submit* so we are preventing it.
 
+we use prevent as its in _form_ so by default _button_ does _submit_ so we are preventing it.
 
 ## Editing Poll Options
-So now we are Editing Options and its simple. We will use actions here. Following code is in `@foreach`.   
+
+So now we are Editing Options and its simple. We will use actions here. Following code is in `@foreach`.
+
 ```php
 <div class="mb-4">
                     <label for="">Option {{ $index + 1 }}</label>
@@ -137,8 +142,10 @@ So now we are Editing Options and its simple. We will use actions here. Followin
                     </div>
                 </div>
 ```
-so in here we are deleting the *Option* using button and action namely `removeOption()`.   
+
+so in here we are deleting the _Option_ using button and action namely `removeOption()`.  
 Then in the `CreatePoll.php` :
+
 ```php
     public function removeOption($index)
     {
@@ -146,12 +153,14 @@ Then in the `CreatePoll.php` :
         $this->options = array_values($this->options);
     }
 ```
+
 `unset()`: deletes the index data fromt he array .
 `array_values`: Returns all the values of the array and also rearrage indexes in case some data is deleted.
 
-## Creating a Poll  
+## Creating a Poll
 
-So to submit the **Poll** we are using *livewire* first check the *form* in `create-poll.blade.php` there we are using `wire:submit.prevent = "createPoll"` then the data isn't sent to url as we prevented it and then in `CreatePoll.php`   
+So to submit the **Poll** we are using _livewire_ first check the _form_ in `create-poll.blade.php` there we are using `wire:submit.prevent = "createPoll"` then the data isn't sent to url as we prevented it and then in `CreatePoll.php`
+
 ```php
     public function createPoll()
     {
@@ -166,3 +175,23 @@ So to submit the **Poll** we are using *livewire* first check the *form* in `cre
     }
 ```
 
+## Refactoring the Poll Storing Code (Another way aka laravel way)
+
+Now we will see another way to store the data but without using a variable (_$poll_).
+
+```php
+Poll::create([
+    'title' => $this->title
+])->options()->createMany(
+    collect($this->options)
+    ->map(fn($option) => ['name' => $option])
+    ->all()
+);
+```
+
+a. `createMany()` : Create a Collection of new instances of the related model.
+a. `collect()` : Create a collection from the given value.
+a. `map()` : Run a map over each of the items.
+a. `all()` : Get all of the items in the collection. i.e. makes an array.
+
+**_Also check the file `CreatePoll.php`_**
