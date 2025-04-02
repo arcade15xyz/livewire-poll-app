@@ -148,3 +148,21 @@ Then in the `CreatePoll.php` :
 ```
 `unset()`: deletes the index data fromt he array .
 `array_values`: Returns all the values of the array and also rearrage indexes in case some data is deleted.
+
+## Creating a Poll  
+
+So to submit the **Poll** we are using *livewire* first check the *form* in `create-poll.blade.php` there we are using `wire:submit.prevent = "createPoll"` then the data isn't sent to url as we prevented it and then in `CreatePoll.php`   
+```php
+    public function createPoll()
+    {
+        $poll = Poll::create([
+            'title' => $this->title
+        ]);
+        foreach ($this->options as $optionName) {
+            $poll->options()->create(['name' => $optionName]);
+        }
+
+        $this->reset(['title', 'options']);
+    }
+```
+
