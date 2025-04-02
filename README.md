@@ -189,9 +189,56 @@ Poll::create([
 );
 ```
 
-a. `createMany()` : Create a Collection of new instances of the related model.
-a. `collect()` : Create a collection from the given value.
-a. `map()` : Run a map over each of the items.
-a. `all()` : Get all of the items in the collection. i.e. makes an array.
+1. `createMany()` : Create a Collection of new instances of the related model.
+2. `collect()` : Create a collection from the given value.
+3. `map()` : Run a map over each of the items.
+4. `all()` : Get all of the items in the collection. i.e. makes an array.
 
 **_Also check the file `CreatePoll.php`_**
+
+## Validation in Livewire
+
+Here we are providing the validation using livewire.  
+in `CreatePoll.php` we add `rules`.
+
+```php
+    protected $rules = [
+        'title' => 'required|min:3|max:255',
+        'options' => 'required|array|min:1|max:10',
+        'options.*' => 'required|min:1|max:255',
+    ];
+
+```
+
+`options.*` indicates the all the data inside the `options`.  
+Then in `createPoll` add `$this->validate()` if the data is validated only then the next lines are compiled else **errors** are returned (**_Go through `CreatePoll.php`_**).  
+Now to show error we use `@error` in the `create-poll.blade.php`
+
+```php
+        @error('title')
+            <div class=" text-red-500">{{ $message }}</div>
+        @enderror
+```
+
+And for **option**
+
+```php
+    @error("options.{$index}")
+        <div class=" text-red-500">{{ $message }}</div>
+    @enderror
+
+```
+
+in case we need **Real-time Validation** we first need to specify directives `wire:model.live` or `wire:model.blur` to be used, also in `CreatePoll.php` we need to use `#[Validate]` above the property or make a function `updated($propertyName)`
+
+```php
+public function updated($propertyName)
+{
+    $this->validateonly($propertyName);
+}
+```
+
+on updation on _property_ validation occurs
+
+[Know about Validation](https://livewire.laravel.com/docs/validation)
+[Know about Real-Time Validation](https://livewire.laravel.com/docs/validation#real-time-validation)
