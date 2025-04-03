@@ -240,5 +240,59 @@ public function updated($propertyName)
 
 on updation on _property_ validation occurs
 
+in case we want some specific message to be sent then we can use this
+
+```php
+    protected $messages = [
+        'options.*' => "The option can't be empty."
+    ];
+```
+
 [Know about Validation](https://livewire.laravel.com/docs/validation)
 [Know about Real-Time Validation](https://livewire.laravel.com/docs/validation#real-time-validation)
+
+## Listing Polls Component
+
+```php
+
+php artisan make:livewire Polls
+```
+
+with this command 2 files are made
+
+1. `app/Livewire/Polls.php`
+2. `resources/views/livewire/polls.blade.php`
+
+now in `Polls.php`
+
+```php
+    public function render()
+    {
+        $polls = \App\Models\Poll::with('options.votes')->latest()->get();
+        return view('livewire.polls',['polls'=> $polls]);
+    }
+```
+
+And in the `polls.blade.php`
+
+```php
+<div>
+    @forelse ($polls as $poll)
+        <div class="mb-4">
+            <h3 class="mb-4 text-xl">
+                {{ $poll->title }}
+            </h3>
+            @foreach($poll->options as $option)
+                <div class="mb-2">
+                    <button class="btn">Vote</button>
+                    {{ $option->name }} ({{ $option->votes->count() }})
+                </div>
+            @endforeach
+        </div>
+    @empty
+        <div class="text-gray-500">
+            No polls Available
+        </div>
+    @endforelse
+</div>
+```
