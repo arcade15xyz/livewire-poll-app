@@ -10,7 +10,7 @@ class CreatePoll extends Component
 {
 
     public $title = '';
-    
+
     public $options = [''];
 
     protected $rules = [
@@ -59,6 +59,9 @@ class CreatePoll extends Component
         // }
 
         $this->reset(['title', 'options']);
+
+        $this->dispatch('pollCreated');
+
     }
 
     /**

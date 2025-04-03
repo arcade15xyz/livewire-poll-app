@@ -296,3 +296,31 @@ And in the `polls.blade.php`
     @endforelse
 </div>
 ```
+
+## Events - Communication between components
+
+**Events** is used to establish the communication between components.  
+Check these files:
+
+> > `app/Livewire/Polls.php`  
+> > `app/Livewire/CreatePoll.php`
+
+Now we will use `dispatch()` for dispatching a _event_.  
+In `CreatePoll.php` `public function createPoll()` add
+```php
+$this->dispatch(event: "pollCreated");
+```
+`pollCreated` is the event. This will be sent to all components i.e all components will know that a event named `pollCreated` is triggered.  
+Next we are using this event to rerender the `Polls` so now to do that 
+```php
+    protected $listeners = [
+        'pollCreated' => 'render'
+    ];
+
+    public function render()
+    {
+        $polls = \App\Models\Poll::with('options.votes')->latest()->get();
+        return view('livewire.polls',['polls'=> $polls]);
+    }
+```
+`$listeners` are functions that define how does the Events effect. so here for event `pollCreated` function `render` will run . This show some dynamism.
