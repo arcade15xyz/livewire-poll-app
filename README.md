@@ -307,11 +307,14 @@ Check these files:
 
 Now we will use `dispatch()` for dispatching a _event_.  
 In `CreatePoll.php` `public function createPoll()` add
+
 ```php
 $this->dispatch(event: "pollCreated");
 ```
+
 `pollCreated` is the event. This will be sent to all components i.e all components will know that a event named `pollCreated` is triggered.  
-Next we are using this event to rerender the `Polls` so now to do that 
+Next we are using this event to rerender the `Polls` so now to do that
+
 ```php
     protected $listeners = [
         'pollCreated' => 'render'
@@ -323,4 +326,22 @@ Next we are using this event to rerender the `Polls` so now to do that
         return view('livewire.polls',['polls'=> $polls]);
     }
 ```
-`$listeners` are functions that define how does the Events effect. so here for event `pollCreated` function `render` will run . This show some dynamism.
+
+`$listeners` are functions that define how does the Events effect. so here for event `pollCreated` function `render` will run . This show some dynamism.  
+[To know more about Events **CLICK**](https://livewire.laravel.com/docs/events)
+
+## Voting in Polls
+
+```php
+    <button class="btn" wire:click="vote({{ $option->id }})">Vote</button>
+```
+
+in `Polls.php`
+
+```php
+    public function vote(Option $option)
+    {
+
+        $option->votes()->create();
+    }
+```
